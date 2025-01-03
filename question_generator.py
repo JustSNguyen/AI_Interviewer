@@ -9,12 +9,21 @@ load_dotenv()
 
 gemini_api_key = os.getenv('GEMINI_API_KEY')
 
-
 class Question(BaseModel):
     question: str 
     expected_answer: str 
 
-def get_interview_question():
+
+def get_excluded_questions():
+    excluded_questions = []
+
+    with open("excluded_interview_questions.txt", 'r') as file:
+        excluded_questions = [line.strip() for line in file]
+    
+    return excluded_questions
+
+
+def get_interview_question(excluded_questions=[]):
     model = GeminiModel('gemini-1.5-flash', api_key=gemini_api_key)
 
     topics = [
@@ -39,8 +48,8 @@ def get_interview_question():
             2. Not require coding or implementation but can be answered verbally.
             3. Reflect common interview questions used by tech companies.
             4. Avoid overly rare or niche questions.
-            Focus on practical knowledge and concepts that are relevant to real-world scenarios. 
-            Make sure to provide a unique and varied question each time, even for the same topic.'''
+            5. Should not be in the list of excluded questions: {excluded_questions}.
+            Focus on practical knowledge and concepts that are relevant to real-world scenarios.''' 
 
     agent = Agent(model, result_type=Question, system_prompt=prompt)
 
@@ -48,6 +57,8 @@ def get_interview_question():
 
     return result.data
 
-question_data = get_interview_question()
-print(question_data.question)
+if __name__ == '__main__':
+    excluded_questions = get_excluded_questions()
+    question_data = get_interview_question(excluded_questions)
+    print(question_data.question)
 
