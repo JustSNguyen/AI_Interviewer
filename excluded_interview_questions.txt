@@ -1,3 +1,0 @@
-Explain the CAP theorem in the context of distributed databases.  Give examples of systems that prioritize different aspects of the theorem.
-Explain the ACID properties of database transactions and provide a real-world example illustrating their importance.
-Explain what a race condition is in the context of multithreading and describe how you would address it.
